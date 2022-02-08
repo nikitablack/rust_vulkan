@@ -1,0 +1,23 @@
+[package]
+authors = ["nc <mynameisnikitablack@gmail.com>"]
+edition = "2018"
+name = "screenshot"
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ash = "0.35.1"
+ash-window = "0.9.0"
+bytemuck = "1.7.2"
+gpu-allocator = "0.16.0"
+image = "0.23.14"
+log = "0.4"
+simplelog = "0.11.1"
+vulkan_base = { path = "../vulkan_base" }
+vulkan_utils = { path = "../vulkan_utils" }
+winit = "0.25.0"
+
+
+[build-dependencies]
+shaderc = "0.7.1"

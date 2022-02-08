@@ -14,3 +14,9 @@ Cargo.lock
 
 # These are VSCode settings
 launch.json
+
+# logs produced by an application
+log.txt
+
+# images
+*.png

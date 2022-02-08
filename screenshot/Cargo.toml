@@ -1,0 +1,3 @@
+[workspace]
+
+members = ["screenshot", "vulkan_base", "vulkan_utils"]
