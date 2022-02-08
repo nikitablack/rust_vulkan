@@ -123,7 +123,7 @@ fn main() {
                 }
 
                 if make_standalone_screenshot {
-                    if let Err(msg) = vulkan::screenshot_draw(vk_data_ref, vk_base_ref) {
+                    if let Err(msg) = vulkan::draw_screenshot(vk_data_ref, vk_base_ref) {
                         log::error!("{}", msg);
                         vulkan::vulkan_clean(&mut vk_base, &mut vk_data);
                         app_exit = true;

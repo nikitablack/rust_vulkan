@@ -1,12 +1,11 @@
 use ash::vk;
 
-use crate::vulkan::VulkanData;
 use vulkan_base::VulkanBase;
 
 pub fn begin_render_pass(
-    vulkan_data: &VulkanData,
     vulkan_base: &VulkanBase,
-    image_index: usize,
+    render_pass: vk::RenderPass,
+    framebuffer: vk::Framebuffer,
     command_buffer: vk::CommandBuffer,
 ) {
     let clear_color = vk::ClearColorValue {
@@ -26,8 +25,8 @@ pub fn begin_render_pass(
     ];
 
     let render_pass_begin_info = vk::RenderPassBeginInfo::builder()
-        .render_pass(vulkan_data.render_pass)
-        .framebuffer(vulkan_data.framebuffers[image_index])
+        .render_pass(render_pass)
+        .framebuffer(framebuffer)
         .render_area(vk::Rect2D {
             offset: vk::Offset2D { x: 0, y: 0 },
             extent: vulkan_base.surface_extent,

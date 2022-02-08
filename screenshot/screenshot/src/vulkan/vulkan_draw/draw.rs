@@ -24,9 +24,9 @@ pub fn draw(
     super::begin_command_buffer(vulkan_base, command_buffer)?;
 
     super::begin_render_pass(
-        vulkan_data,
         vulkan_base,
-        image_index as usize,
+        vulkan_data.render_pass,
+        vulkan_data.framebuffers[image_index as usize],
         command_buffer,
     );
 
@@ -70,10 +70,10 @@ pub fn draw(
 
     let mut screenshot_buffer = None;
     if make_screenshot {
-        let _ = screenshot_buffer.insert(super::do_swapchain_screenshot(
+        let _ = screenshot_buffer.insert(super::do_screenshot(
             vulkan_base,
+            vulkan_base.swapchain_images[image_index as usize],
             command_buffer,
-            image_index as usize,
         )?);
     }
 

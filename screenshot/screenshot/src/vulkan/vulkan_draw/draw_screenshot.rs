@@ -2,7 +2,7 @@ use crate::VulkanData;
 use ash::vk;
 use vulkan_base::VulkanBase;
 
-pub fn screenshot_draw(
+pub fn draw_screenshot(
     vulkan_data: &mut VulkanData,
     vulkan_base: &mut VulkanBase,
 ) -> Result<(), String> {
@@ -11,7 +11,12 @@ pub fn screenshot_draw(
     let command_buffer = super::get_command_buffer(vulkan_data, vulkan_base)?;
     super::begin_command_buffer(vulkan_base, command_buffer)?;
 
-    super::screenshot_begin_render_pass(vulkan_data, vulkan_base, command_buffer);
+    super::begin_render_pass(
+        vulkan_base,
+        vulkan_data.render_pass,
+        vulkan_data.screenshot_framebuffer,
+        command_buffer,
+    );
 
     super::set_viewport(vulkan_base, command_buffer);
     super::set_scissor(vulkan_base, command_buffer);
@@ -51,8 +56,11 @@ pub fn screenshot_draw(
         vulkan_base.device.cmd_end_render_pass(command_buffer);
     }
 
-    let screenshot_buffer =
-        super::do_standalone_screenshot(vulkan_data, vulkan_base, command_buffer)?;
+    let screenshot_buffer = super::do_screenshot(
+        vulkan_base,
+        vulkan_data.screenshot_mem_image.image,
+        command_buffer,
+    )?;
 
     unsafe {
         vulkan_base

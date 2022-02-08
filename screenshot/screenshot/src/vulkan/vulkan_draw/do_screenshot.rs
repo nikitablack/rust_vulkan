@@ -1,13 +1,12 @@
-use crate::vulkan::VulkanData;
 use ash::vk;
 use vulkan_base::VulkanBase;
 
-pub fn do_standalone_screenshot(
-    vulkan_data: &mut VulkanData,
+pub fn do_screenshot(
     vulkan_base: &mut VulkanBase,
+    image: vk::Image,
     command_buffer: vk::CommandBuffer,
 ) -> Result<vulkan_utils::MemBuffer, String> {
-    log::info!("making standalone screenshot");
+    log::info!("do screenshot");
 
     let barrier = vk::ImageMemoryBarrier::builder()
         .subresource_range(vk::ImageSubresourceRange {
@@ -17,11 +16,11 @@ pub fn do_standalone_screenshot(
             base_array_layer: 0,
             layer_count: 1,
         })
-        .old_layout(vk::ImageLayout::COLOR_ATTACHMENT_OPTIMAL)
+        .old_layout(vk::ImageLayout::PRESENT_SRC_KHR)
         .new_layout(vk::ImageLayout::TRANSFER_SRC_OPTIMAL)
         .src_access_mask(vk::AccessFlags::NONE_KHR)
         .dst_access_mask(vk::AccessFlags::TRANSFER_READ)
-        .image(vulkan_data.screenshot_mem_image.image)
+        .image(image)
         .build();
 
     unsafe {
@@ -71,7 +70,7 @@ pub fn do_standalone_screenshot(
     unsafe {
         vulkan_base.device.cmd_copy_image_to_buffer(
             command_buffer,
-            vulkan_data.screenshot_mem_image.image,
+            image,
             vk::ImageLayout::TRANSFER_SRC_OPTIMAL,
             buffer.buffer,
             &[region],
@@ -87,10 +86,10 @@ pub fn do_standalone_screenshot(
             layer_count: 1,
         })
         .old_layout(vk::ImageLayout::TRANSFER_SRC_OPTIMAL)
-        .new_layout(vk::ImageLayout::COLOR_ATTACHMENT_OPTIMAL)
+        .new_layout(vk::ImageLayout::PRESENT_SRC_KHR)
         .src_access_mask(vk::AccessFlags::TRANSFER_READ)
         .dst_access_mask(vk::AccessFlags::NONE_KHR)
-        .image(vulkan_data.screenshot_mem_image.image)
+        .image(image)
         .build();
 
     unsafe {
@@ -105,7 +104,7 @@ pub fn do_standalone_screenshot(
         );
     }
 
-    log::info!("standalone screenshot made");
+    log::info!("screenshot done");
 
     Ok(buffer)
 }

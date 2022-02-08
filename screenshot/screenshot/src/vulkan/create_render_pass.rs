@@ -2,17 +2,18 @@ use ash::vk;
 
 pub fn create_render_pass(
     device: &ash::Device,
-    surface_format: vk::Format,
+    format: vk::Format,
     depth_format: vk::Format,
+    object_name: &str,
     debug_utils_loader: &ash::extensions::ext::DebugUtils,
 ) -> Result<vk::RenderPass, String> {
-    log::info!("creating render pass");
+    log::info!("{}: creating", object_name);
 
     let mut attachment_descriptions = Vec::new();
 
     attachment_descriptions.push(
         vk::AttachmentDescription::builder()
-            .format(surface_format)
+            .format(format)
             .samples(vk::SampleCountFlags::TYPE_1)
             .load_op(vk::AttachmentLoadOp::CLEAR)
             .store_op(vk::AttachmentStoreOp::STORE)
@@ -72,10 +73,10 @@ pub fn create_render_pass(
         debug_utils_loader,
         device.handle(),
         render_pass,
-        "render pass",
+        object_name,
     );
 
-    log::info!("render pass created");
+    log::info!("{}: created", object_name);
 
     Ok(render_pass)
 }

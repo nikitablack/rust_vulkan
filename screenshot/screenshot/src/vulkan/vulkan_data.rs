@@ -311,6 +311,7 @@ impl VulkanData {
             &vulkan_base.device,
             vulkan_base.surface_format.format,
             vulkan_base.depth_format,
+            "render pass",
             &vulkan_base.debug_utils_loader,
         )?;
 
@@ -356,10 +357,11 @@ impl VulkanData {
             vulkan::create_descriptor_pools(&vulkan_base.device, &vulkan_base.debug_utils_loader)?;
 
         let screenshot_format = vk::Format::B8G8R8A8_SRGB;
-        let screenshot_render_pass = vulkan::create_screenshot_render_pass(
+        let screenshot_render_pass = vulkan::create_render_pass(
             &vulkan_base.device,
             screenshot_format,
             vulkan_base.depth_format,
+            "screenshot render pass",
             &vulkan_base.debug_utils_loader,
         )?;
 
