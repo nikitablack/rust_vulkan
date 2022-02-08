@@ -19,12 +19,12 @@ pub fn get_surface_format(
         }
     };
 
-    /*for f in &formats {
-        if f.format == vk::Format::B8G8R8A8_UNORM
+    for f in &formats {
+        if f.format == vk::Format::B8G8R8A8_SRGB
             && f.color_space == vk::ColorSpaceKHR::SRGB_NONLINEAR
         {
             let surface_format = vk::SurfaceFormatKHR {
-                format: vk::Format::B8G8R8A8_UNORM,
+                format: vk::Format::B8G8R8A8_SRGB,
                 color_space: vk::ColorSpaceKHR::SRGB_NONLINEAR,
             };
 
@@ -32,9 +32,7 @@ pub fn get_surface_format(
 
             return Ok(surface_format);
         }
-    }*/
+    }
 
-    log::info!("selected first surface format: {:?}", formats[1]);
-
-    Ok(formats[1])
+    Ok(formats[0])
 }
