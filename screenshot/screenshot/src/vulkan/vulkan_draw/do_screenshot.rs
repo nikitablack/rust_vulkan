@@ -4,6 +4,7 @@ use vulkan_base::VulkanBase;
 pub fn do_screenshot(
     vulkan_base: &mut VulkanBase,
     image: vk::Image,
+    format: vk::Format,
     command_buffer: vk::CommandBuffer,
 ) -> Result<vulkan_utils::MemBuffer, String> {
     log::info!("do screenshot");
@@ -57,11 +58,13 @@ pub fn do_screenshot(
         })
         .build();
 
+    let block_size = vulkan_utils::get_format_block_size(format);
+
     let buffer = vulkan_utils::create_buffer(
         &vulkan_base.device,
         &mut vulkan_base.allocator,
         &vulkan_base.debug_utils_loader,
-        (extent.width * extent.height * 4) as u64,
+        (extent.width * extent.height * block_size as u32) as u64,
         vk::BufferUsageFlags::TRANSFER_DST,
         gpu_allocator::MemoryLocation::CpuToGpu,
         "screenshot buffer",

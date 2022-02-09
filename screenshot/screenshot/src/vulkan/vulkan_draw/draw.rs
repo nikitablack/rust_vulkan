@@ -73,6 +73,7 @@ pub fn draw(
         let _ = screenshot_buffer.insert(super::do_screenshot(
             vulkan_base,
             vulkan_base.swapchain_images[image_index as usize],
+            vulkan_base.surface_format.format,
             command_buffer,
         )?);
     }
@@ -87,7 +88,11 @@ pub fn draw(
     super::submit(vulkan_data, vulkan_base, command_buffer)?;
 
     if make_screenshot && screenshot_buffer.is_some() {
-        super::save_screenshot(screenshot_buffer.unwrap(), vulkan_base)?;
+        super::save_screenshot(
+            screenshot_buffer.unwrap(),
+            vulkan_base,
+            vulkan_base.surface_format.format,
+        )?;
     }
 
     if !super::present(vulkan_data, vulkan_base, image_index)? {

@@ -59,6 +59,7 @@ pub fn draw_screenshot(
     let screenshot_buffer = super::do_screenshot(
         vulkan_base,
         vulkan_data.screenshot_mem_image.image,
+        vulkan_data.screenshot_format,
         command_buffer,
     )?;
 
@@ -71,7 +72,11 @@ pub fn draw_screenshot(
 
     super::submit_screenshot(vulkan_data, vulkan_base, command_buffer)?;
 
-    super::save_screenshot(screenshot_buffer, vulkan_base)?;
+    super::save_screenshot(
+        screenshot_buffer,
+        vulkan_base,
+        vulkan_data.screenshot_format,
+    )?;
 
     Ok(())
 }

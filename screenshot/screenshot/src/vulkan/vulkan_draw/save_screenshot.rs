@@ -1,8 +1,10 @@
+use ash::vk;
 use vulkan_base::VulkanBase;
 
 pub fn save_screenshot(
     screenshot_mem_buffer: vulkan_utils::MemBuffer,
     vulkan_base: &mut VulkanBase,
+    format: vk::Format,
 ) -> Result<(), String> {
     log::info!("saving screenshot data");
 
@@ -18,15 +20,14 @@ pub fn save_screenshot(
     let extent = &vulkan_base.surface_extent;
     let mut imgbuf = image::ImageBuffer::new(extent.width, extent.height);
 
+    let block_size = vulkan_utils::get_format_block_size(format);
+    let color_reader = vulkan_utils::get_color_reader(format);
+
     for x in 0..extent.width {
         for y in 0..extent.height {
-            let b = data[(extent.width * y * 4 + x * 4 + 0) as usize];
-            let g = data[(extent.width * y * 4 + x * 4 + 1) as usize];
-            let r = data[(extent.width * y * 4 + x * 4 + 2) as usize];
-            let a = data[(extent.width * y * 4 + x * 4 + 3) as usize];
-
+            let offset = extent.width * y * (block_size as u32) + x * (block_size as u32);
             let pixel = imgbuf.get_pixel_mut(x, y);
-            *pixel = image::Rgba([r, g, b, a]);
+            *pixel = color_reader.read(data, offset as usize)
         }
     }
 
